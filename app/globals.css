@@ -795,3 +795,51 @@ footer {
     align-items: flex-start;
   }
 }
+
+.account-control {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: auto;
+}
+.account-control span {
+  color: var(--navy);
+  font-size: 13px;
+  text-align: right;
+}
+.account-control small {
+  display: block;
+  margin-top: 2px;
+  color: var(--muted);
+  font-size: 11px;
+}
+.account-control button {
+  border: 1px solid #c6d9e7;
+  border-radius: 3px;
+  background: #fff;
+  color: var(--navy);
+  padding: 8px 11px;
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 700;
+}
+.login-hero { min-height: 220px; }
+.login-content { max-width: 700px; }
+.login-form input {
+  width: 100%;
+  margin: 0 0 18px;
+  border: 1px solid #b9c8d4;
+  border-radius: 3px;
+  background: #fff;
+  color: var(--ink);
+  padding: 14px;
+  font-size: 15px;
+}
+.login-error {
+  margin: 0 0 15px;
+  border-left: 3px solid #b5563f;
+  background: #fff0ed;
+  color: #9c3e30;
+  padding: 10px 12px;
+  font-size: 13px;
+}
