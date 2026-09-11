@@ -144,6 +144,10 @@ const buildings: Record<string, Building> = {
 };
 
 export default function Home() {
+  const [signedIn, setSignedIn] = useState(false);
+  const [loginName, setLoginName] = useState("");
+  const [loginPassword, setLoginPassword] = useState("");
+  const [loginError, setLoginError] = useState("");
   const [startApplication, setStartApplication] = useState(false);
   const [building, setBuilding] = useState("");
   const [residentName, setResidentName] = useState("");
@@ -153,6 +157,7 @@ export default function Home() {
   const [signatureName, setSignatureName] = useState("");
   const [signatureAccepted, setSignatureAccepted] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [submitNotice, setSubmitNotice] = useState("");
   const config = buildings[building];
   const selected = workType ? (config?.requirements[workType] ?? null) : null;
   const needsSignature = Boolean(
@@ -182,6 +187,7 @@ export default function Home() {
     setSignatureName("");
     setSignatureAccepted(false);
     setSubmitted(false);
+    setSubmitNotice("");
   };
   function selectFiles(event: ChangeEvent<HTMLInputElement>) {
     setFiles(Array.from(event.target.files ?? []));
@@ -189,7 +195,63 @@ export default function Home() {
   }
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    if (canSubmit) setSubmitted(true);
+    if (!canSubmit) {
+      setSubmitNotice("Your application is saved in progress. Add the required documents and, when applicable, complete the electronic signature before submitting it to management.");
+      return;
+    }
+    setSubmitNotice("");
+    setSubmitted(true);
+  }
+  function signIn(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    if (loginName.trim().length < 2 || loginPassword.length < 12) {
+      setLoginError("Enter your username and a password with at least 12 characters.");
+      return;
+    }
+    setLoginError("");
+    setSignedIn(true);
+  }
+  const accountControl = (
+    <div className="account-control">
+      <span>{loginName || "Applicant"}<small>Applicant</small></span>
+      <button type="button" onClick={() => { setSignedIn(false); setStartApplication(false); }}>Sign out</button>
+    </div>
+  );
+  if (!signedIn) {
+    return (
+      <main>
+        <header className="topbar">
+          <div className="brand-mark">DE</div>
+          <div>
+            <p className="eyebrow">Douglas Elliman Property Management</p>
+            <h1>Alteration Portal</h1>
+          </div>
+          <span className="secure">Secure applicant portal</span>
+        </header>
+        <section className="hero login-hero">
+          <div>
+            <p className="eyebrow light">Resident sign in</p>
+            <h2>Access your alteration application.</h2>
+            <p>Sign in with the credentials provided by management to begin a new application or return to an existing one.</p>
+          </div>
+        </section>
+        <section className="content login-content">
+          <form className="form-section login-form" onSubmit={signIn}>
+            <div className="section-heading">
+              <span>01</span>
+              <div><h3>Sign in securely</h3><p>Your username is provided by management.</p></div>
+            </div>
+            <label htmlFor="login-name">Username <b>Required</b></label>
+            <input id="login-name" value={loginName} onChange={(event) => setLoginName(event.target.value)} autoComplete="username" required />
+            <label htmlFor="login-password">Password <b>Required</b></label>
+            <input id="login-password" type="password" value={loginPassword} onChange={(event) => setLoginPassword(event.target.value)} autoComplete="current-password" minLength={12} required />
+            {loginError && <p className="login-error">{loginError}</p>}
+            <button type="submit" className="submit">Sign in <span>→</span></button>
+            <p className="form-hint">Passwords must be at least 12 characters.</p>
+          </form>
+        </section>
+      </main>
+    );
   }
   if (!startApplication) {
     return (
@@ -200,7 +262,7 @@ export default function Home() {
             <p className="eyebrow">Douglas Elliman Property Management</p>
             <h1>Alteration Portal</h1>
           </div>
-          <span className="secure">Secure applicant portal</span>
+          {accountControl}
         </header>
         <section className="hero">
           <div>
@@ -240,7 +302,7 @@ export default function Home() {
           <p className="eyebrow">Douglas Elliman Property Management</p>
           <h1>Alteration Applications</h1>
         </div>
-        <span className="secure">Secure applicant portal</span>
+        {accountControl}
       </header>
       <section className="hero">
         <div>
@@ -590,12 +652,13 @@ export default function Home() {
                   complete and accurate.
                 </label>
               </div>
-              <button type="submit" className="submit" disabled={!canSubmit}>
+              <button type="submit" className="submit">
                 {needsSignature
                   ? "Submit signed application"
                   : "Submit application"}{" "}
                 <span>→</span>
               </button>
+              {submitNotice && <p className="confirmation">{submitNotice}</p>}
               {!canSubmit && (
                 <p className="form-hint">
                   Enter your name and unit number, select a property and work
