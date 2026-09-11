@@ -144,6 +144,7 @@ const buildings: Record<string, Building> = {
 };
 
 export default function Home() {
+  const [startApplication, setStartApplication] = useState(false);
   const [building, setBuilding] = useState("");
   const [residentName, setResidentName] = useState("");
   const [unitNumber, setUnitNumber] = useState("");
@@ -189,6 +190,47 @@ export default function Home() {
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     if (canSubmit) setSubmitted(true);
+  }
+  if (!startApplication) {
+    return (
+      <main>
+        <header className="topbar">
+          <div className="brand-mark">DE</div>
+          <div>
+            <p className="eyebrow">Douglas Elliman Property Management</p>
+            <h1>Alteration Portal</h1>
+          </div>
+          <span className="secure">Secure applicant portal</span>
+        </header>
+        <section className="hero">
+          <div>
+            <p className="eyebrow light">Resident portal</p>
+            <h2>Start, save, and follow your alteration application.</h2>
+            <p>Begin a new application for your apartment or return to an existing project when management has asked for additional information.</p>
+          </div>
+          <div className="hero-note">
+            <span>Ready to begin?</span>
+            <strong>Choose your building and project type.</strong>
+          </div>
+        </section>
+        <section className="content portal-home">
+          <section className="form-section">
+            <div className="section-heading">
+              <span>01</span>
+              <div>
+                <h3>New alteration application</h3>
+                <p>We will guide you through the appropriate building requirements before you submit anything.</p>
+              </div>
+            </div>
+            <button type="button" className="submit" onClick={() => setStartApplication(true)}>Create a new application <span>→</span></button>
+          </section>
+        </section>
+        <footer>
+          <span>Alteration Portal</span>
+          <span>© {new Date().getFullYear()} Douglas Elliman Property Management</span>
+        </footer>
+      </main>
+    );
   }
   return (
     <main>
